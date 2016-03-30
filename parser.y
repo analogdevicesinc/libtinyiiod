@@ -40,6 +40,13 @@ void * yyget_extra(yyscan_t scanner);
 #define ECHO do { } while (0)
 
 #define YY_INPUT(buf,result,max_size) do { } while (0)
+
+struct yy_buffer_state;
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
+#define YY_TYPEDEF_YY_BUFFER_STATE
+
+YY_BUFFER_STATE yy_scan_string(const char *yy_str, yyscan_t yyscanner);
+void yy_delete_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner);
 }
 
 %define api.pure
