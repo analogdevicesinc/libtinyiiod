@@ -19,7 +19,14 @@
 #define TINYIIOD_H
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdlib.h>
+
+#if !defined(__ssize_t_defined) && !defined(_SSIZE_T_DEFINED)
+typedef long int ssize_t;
+#define __ssize_t_defined
+#define _SSIZE_T_DEFINED
+#endif
 
 struct tinyiiod;
 
