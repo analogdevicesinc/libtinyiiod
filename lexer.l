@@ -20,6 +20,8 @@
 #include "tinyiiod-private.h"
 
 #include <string.h>
+
+#define fprintf(f, format, msg) printf(format, msg)
 %}
 
 %option noyywrap reentrant bison-bridge nounistd nounput noinput never-interactive
