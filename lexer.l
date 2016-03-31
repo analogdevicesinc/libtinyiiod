@@ -146,7 +146,7 @@ CYCLIC|cyclic {
 	return SPACE;
 }
 
-[ \t]*\r?\n {
+[ \t]*(\r|\n) {
 	BEGIN(INITIAL);
 	return END;
 }
