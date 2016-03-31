@@ -53,7 +53,7 @@ void tinyiiod_destroy(struct tinyiiod *iiod)
 
 int tinyiiod_read_command(struct tinyiiod *iiod)
 {
-	char buf[256];
+	char buf[128];
 	void *ptr;
 	int ret;
 
@@ -120,7 +120,7 @@ void tinyiiod_write_string(struct tinyiiod *iiod, const char *str)
 
 void tinyiiod_write_value(struct tinyiiod *iiod, int value)
 {
-	char buf[128];
+	char buf[16];
 
 	snprintf(buf, sizeof(buf), "%i\n", value);
 	tinyiiod_write_string(iiod, buf);
@@ -137,7 +137,7 @@ void tinyiiod_write_xml(struct tinyiiod *iiod)
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 		const char *channel, bool ch_out, const char *attr)
 {
-	char buf[1024];
+	char buf[128];
 	ssize_t ret;
 
 	if (channel)
@@ -157,7 +157,7 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 		const char *channel, bool ch_out, const char *attr,
 		size_t bytes)
 {
-	char buf[1024];
+	char buf[128];
 	ssize_t ret;
 
 	if (bytes > sizeof(buf))
