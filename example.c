@@ -21,14 +21,14 @@
 #include <stdio.h>
 #include <string.h>
 
-static char read_char(void)
+static void read_data(char *buf, size_t len)
 {
-	return (char) getchar();
+	fread(buf, 1, len, stdin);
 }
 
-static void write_char(char c)
+static void write_data(const char *buf, size_t len)
 {
-	putchar((int) (unsigned char) c);
+	fwrite(buf, 1, len, stdout);
 }
 
 static ssize_t read_attr(const char *device, const char *attr,
@@ -80,8 +80,8 @@ static ssize_t ch_write_attr(const char *device, const char *channel,
 }
 
 static const struct tinyiiod_ops ops = {
-	.read_char = read_char,
-	.write_char = write_char,
+	.read = read_data,
+	.write = write_data,
 
 	.read_attr = read_attr,
 	.write_attr = write_attr,
