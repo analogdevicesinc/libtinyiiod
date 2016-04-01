@@ -48,20 +48,10 @@ add_definitions(-DTINYIIOD_VERSION_MAJOR=${TINYIIOD_VERSION_MAJOR})
 add_definitions(-DTINYIIOD_VERSION_MINOR=${TINYIIOD_VERSION_MINOR})
 add_definitions(-DTINYIIOD_VERSION_GIT="${TINYIIOD_VERSION_GIT}")
 
-
-include(FindBISON)
-include(FindFLEX)
-
-flex_target(lexer
-	${CMAKE_CURRENT_SOURCE_DIR}/lexer.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.c)
-bison_target(parser
-	${CMAKE_CURRENT_SOURCE_DIR}/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.c)
-add_flex_bison_dependency(lexer parser)
-
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(tinyiiod tinyiiod.c ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS})
+add_library(tinyiiod tinyiiod.c parser.c)
 set_target_properties(tinyiiod PROPERTIES
 	VERSION ${TINYIIOD_VERSION}
 	SOVERSION ${TINYIIOD_VERSION_MAJOR}

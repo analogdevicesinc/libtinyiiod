@@ -15,7 +15,6 @@
  * Lesser General Public License for more details.
  */
 
-#include "parser.h"
 #include "tinyiiod-private.h"
 
 #include <errno.h>
@@ -26,7 +25,6 @@
 struct tinyiiod {
 	const char *xml;
 	const struct tinyiiod_ops *ops;
-	yyscan_t scanner;
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,
@@ -40,31 +38,27 @@ struct tinyiiod * tinyiiod_create(const char *xml,
 	iiod->xml = xml;
 	iiod->ops = ops;
 
-	yylex_init_extra(iiod, &iiod->scanner);
-
 	return iiod;
 }
 
 void tinyiiod_destroy(struct tinyiiod *iiod)
 {
-	yylex_destroy(iiod->scanner);
 	free(iiod);
 }
 
 int tinyiiod_read_command(struct tinyiiod *iiod)
 {
 	char buf[128];
-	void *ptr;
 	int ret;
 
 	ret = (int) tinyiiod_read_line(iiod, buf, sizeof(buf));
 	if (ret < 0)
 		return ret;
 
-	ptr = yy_scan_string(buf, iiod->scanner);
-	ret = yyparse(iiod->scanner);
+	ret = tinyiiod_parse_string(iiod, buf);
+	if (ret < 0)
+		tinyiiod_write_value(iiod, ret);
 
-	yy_delete_buffer(ptr, iiod->scanner);
 	return ret;
 }
 
@@ -133,6 +127,7 @@ void tinyiiod_write_xml(struct tinyiiod *iiod)
 
 	tinyiiod_write_value(iiod, len);
 	tinyiiod_write(iiod, iiod->xml, len);
+	tinyiiod_write_char(iiod, '\n');
 }
 
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
