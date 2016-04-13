@@ -89,12 +89,12 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 			break;
 	}
 
-	if (!found) {
+	if (!found || i == len - 1) {
 		/* No \n found -> garbage data */
 		return -EIO;
 	}
 
-	buf[i + 1] = '\0';
+	buf[i] = '\0';
 	return (ssize_t) i;
 }
 

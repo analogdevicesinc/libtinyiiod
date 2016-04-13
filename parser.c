@@ -4,19 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static void remove_eol(char *str)
-{
-	char *ptr;
-
-	ptr = strrchr(str, '\n');
-	if (ptr)
-		*ptr = '\0';
-
-	ptr = strrchr(str, '\r');
-	if (ptr)
-		*ptr = '\0';
-}
-
 static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 {
 	char *device, *channel, *attr, *ptr;
@@ -81,7 +68,8 @@ static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 
 int tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 {
-	remove_eol(str);
+	while (*str == '\n' || *str == '\r')
+		str++;
 
 	if (str[0] == '\0')
 		return 0;
