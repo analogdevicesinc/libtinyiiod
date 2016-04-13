@@ -38,6 +38,10 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 		const char *channel, bool ch_out, const char *attr,
 		size_t bytes);
 
+void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
+		size_t sample_size, uint32_t mask);
+void tinyiiod_do_close(struct tinyiiod *iiod, const char *device);
+
 int tinyiiod_parse_string(struct tinyiiod *iiod, char *str);
 
 #endif /* TINYIIOD_PRIVATE_H */

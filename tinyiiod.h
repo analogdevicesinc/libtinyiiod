@@ -20,6 +20,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #if !defined(__ssize_t_defined) && !defined(_SSIZE_T_DEFINED)
@@ -47,6 +48,9 @@ struct tinyiiod_ops {
 	ssize_t (*ch_write_attr)(const char *device, const char *channel,
 			bool ch_out, const char *attr,
 			const char *buf, size_t len);
+
+	int (*open)(const char *device, size_t sample_size, uint32_t mask);
+	int (*close)(const char *device);
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,

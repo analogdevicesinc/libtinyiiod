@@ -169,3 +169,16 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 
 	tinyiiod_write_value(iiod, (int) ret);
 }
+
+void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
+		size_t sample_size, uint32_t mask)
+{
+	int ret = iiod->ops->open(device, sample_size, mask);
+	tinyiiod_write_value(iiod, ret);
+}
+
+void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
+{
+	int ret = iiod->ops->close(device);
+	tinyiiod_write_value(iiod, ret);
+}
