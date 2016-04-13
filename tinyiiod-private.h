@@ -42,6 +42,9 @@ void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
 		size_t sample_size, uint32_t mask);
 void tinyiiod_do_close(struct tinyiiod *iiod, const char *device);
 
+void tinyiiod_do_readbuf(struct tinyiiod *iiod,
+		const char *device, size_t bytes_count);
+
 int tinyiiod_parse_string(struct tinyiiod *iiod, char *str);
 
 #endif /* TINYIIOD_PRIVATE_H */

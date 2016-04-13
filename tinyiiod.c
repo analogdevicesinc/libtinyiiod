@@ -182,3 +182,38 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 	int ret = iiod->ops->close(device);
 	tinyiiod_write_value(iiod, ret);
 }
+
+void tinyiiod_do_readbuf(struct tinyiiod *iiod,
+		const char *device, size_t bytes_count)
+{
+	int ret;
+	char buf_mask[10], *buf;
+	uint32_t mask;
+
+	ret = iiod->ops->get_mask(device, &mask);
+	if (ret < 0)
+		goto out_print_err;
+
+	snprintf(buf_mask, sizeof(buf_mask), "%08lx\n", mask);
+
+	buf = malloc(bytes_count);
+	if (!buf) {
+		ret = -ENOMEM;
+		goto out_print_err;
+	}
+
+	ret = (int) iiod->ops->read_data(device, buf, bytes_count);
+	if (ret < 0)
+		goto out_free_buf;
+
+	tinyiiod_write_value(iiod, ret);
+	tinyiiod_write_string(iiod, buf_mask);
+	tinyiiod_write(iiod, buf, (size_t) ret);
+	free(buf);
+	return;
+
+out_free_buf:
+	free(buf);
+out_print_err:
+	tinyiiod_write_value(iiod, ret);
+}

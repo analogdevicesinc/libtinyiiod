@@ -124,6 +124,27 @@ static int parse_open_string(struct tinyiiod *iiod, char *str)
 	return 0;
 }
 
+static int parse_readbuf_string(struct tinyiiod *iiod, char *str)
+{
+	char *device, *ptr;
+	long bytes_count;
+
+	ptr = strchr(str, ' ');
+	if (!ptr)
+		return -EINVAL;
+
+	*ptr = '\0';
+	device = str;
+	str = ptr + 1;
+
+	bytes_count = strtol(str, &ptr, 10);
+	if (str == ptr || *ptr != '\0' || bytes_count < 0)
+		return -EINVAL;
+
+	tinyiiod_do_readbuf(iiod, device, (size_t) bytes_count);
+	return 0;
+}
+
 int tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 {
 	while (*str == '\n' || *str == '\r')
@@ -161,6 +182,9 @@ int tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 		tinyiiod_do_close(iiod, str + sizeof("CLOSE ") - 1);
 		return 0;
 	}
+
+	if (!strncmp(str, "READBUF ", sizeof("READBUF ") -1))
+		return parse_readbuf_string(iiod, str + sizeof("READBUF ") - 1);
 
 	return -EINVAL;
 }
