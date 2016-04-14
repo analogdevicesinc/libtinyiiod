@@ -187,33 +187,33 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 		const char *device, size_t bytes_count)
 {
 	int ret;
-	char buf_mask[10], *buf;
+	char buf[256];
 	uint32_t mask;
+	bool print_mask = true;
 
 	ret = iiod->ops->get_mask(device, &mask);
-	if (ret < 0)
-		goto out_print_err;
-
-	snprintf(buf_mask, sizeof(buf_mask), "%08lx\n", mask);
-
-	buf = malloc(bytes_count);
-	if (!buf) {
-		ret = -ENOMEM;
-		goto out_print_err;
+	if (ret < 0) {
+		tinyiiod_write_value(iiod, ret);
+		return;
 	}
 
-	ret = (int) iiod->ops->read_data(device, buf, bytes_count);
-	if (ret < 0)
-		goto out_free_buf;
+	while(bytes_count) {
+		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
-	tinyiiod_write_value(iiod, ret);
-	tinyiiod_write_string(iiod, buf_mask);
-	tinyiiod_write(iiod, buf, (size_t) ret);
-	free(buf);
-	return;
+		ret = (int) iiod->ops->read_data(device, buf, bytes);
+		tinyiiod_write_value(iiod, ret);
+		if (ret < 0)
+			return;
 
-out_free_buf:
-	free(buf);
-out_print_err:
-	tinyiiod_write_value(iiod, ret);
+		if (print_mask) {
+			char buf_mask[10];
+
+			snprintf(buf_mask, sizeof(buf_mask), "%08lx\n", mask);
+			tinyiiod_write_string(iiod, buf_mask);
+			print_mask = false;
+		}
+
+		tinyiiod_write(iiod, buf, (size_t) ret);
+		bytes_count -= (size_t) ret;
+	}
 }
