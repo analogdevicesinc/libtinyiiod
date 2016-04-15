@@ -38,10 +38,10 @@ struct tinyiiod_ops {
 	/* Write to the output stream */
 	void (*write)(const char *buf, size_t len);
 
-	ssize_t (*read_attr)(const char *device,
-			const char *attr, char *buf, size_t len);
-	ssize_t (*write_attr)(const char *device,
-			const char *attr, const char *buf, size_t len);
+	ssize_t (*read_attr)(const char *device, const char *attr,
+			char *buf, size_t len, bool debug);
+	ssize_t (*write_attr)(const char *device, const char *attr,
+			const char *buf, size_t len, bool debug);
 
 	ssize_t (*ch_read_attr)(const char *device, const char *channel,
 			bool ch_out, const char *attr, char *buf, size_t len);

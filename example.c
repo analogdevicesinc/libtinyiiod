@@ -32,11 +32,15 @@ static void write_data(const char *buf, size_t len)
 }
 
 static ssize_t read_attr(const char *device, const char *attr,
-		char *buf, size_t len)
+		char *buf, size_t len, bool debug)
 {
 	if (!strcmp(device, "adc") || !strcmp(device, "0")) {
-		if (!strcmp(attr, "sample_rate")) {
-			return (ssize_t) snprintf(buf, len, "1000");
+		if (debug) {
+			if (!strcmp(attr, "direct_reg_access"))
+				return (ssize_t) snprintf(buf, len, "0");
+		} else {
+			if (!strcmp(attr, "sample_rate"))
+				return (ssize_t) snprintf(buf, len, "1000");
 		}
 	}
 
@@ -44,7 +48,7 @@ static ssize_t read_attr(const char *device, const char *attr,
 }
 
 static ssize_t write_attr(const char *device, const char *attr,
-		const char *buf, size_t len)
+		const char *buf, size_t len, bool debug)
 {
 	return -ENOSYS;
 }
@@ -107,6 +111,7 @@ static const char * const xml =
 "<channel id=\"voltage1\" type=\"input\" >"
 "<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
 "<attribute name=\"sample_rate\" />"
+"<debug-attribute name=\"direct_reg_access\" />"
 "</device></context>";
 
 static bool stop;

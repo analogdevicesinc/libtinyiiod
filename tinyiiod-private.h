@@ -32,11 +32,11 @@ void tinyiiod_write_value(struct tinyiiod *iiod, int value);
 void tinyiiod_write_xml(struct tinyiiod *iiod);
 
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
-		const char *channel, bool ch_out, const char *attr);
+		const char *channel, bool ch_out, const char *attr, bool debug);
 
 void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 		const char *channel, bool ch_out, const char *attr,
-		size_t bytes);
+		size_t bytes, bool debug);
 
 void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
 		size_t sample_size, uint32_t mask);
