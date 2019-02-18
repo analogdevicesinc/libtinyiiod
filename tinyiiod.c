@@ -210,7 +210,7 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 		if (print_mask) {
 			char buf_mask[10];
 
-			snprintf(buf_mask, sizeof(buf_mask), "%08lx\n", mask);
+			snprintf(buf_mask, sizeof(buf_mask), "%08x\n", mask);
 			tinyiiod_write_string(iiod, buf_mask);
 			print_mask = false;
 		}
