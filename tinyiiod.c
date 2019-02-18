@@ -157,8 +157,8 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 	char buf[128];
 	ssize_t ret;
 
-	if (bytes > sizeof(buf))
-		bytes = sizeof(buf);
+	if (bytes > sizeof(buf) - 1)
+		bytes = sizeof(buf) - 1;
 
 	tinyiiod_read(iiod, buf, bytes);
 	buf[bytes] = '\0';
