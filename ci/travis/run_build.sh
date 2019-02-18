@@ -4,7 +4,8 @@ set -e
 . ./ci/travis/lib.sh
 
 build_default() {
-    . ./build/cppcheck.sh 
+    . ./ci/travis/build_project.sh
+    . ./build/cppcheck.sh
 }
 
 build_astyle() {
