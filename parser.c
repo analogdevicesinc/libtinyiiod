@@ -70,7 +70,7 @@ static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 		str = ptr + 1;
 	} else {
 		tinyiiod_do_read_attr(iiod, device, channel,
-				output, attr, debug);
+				      output, attr, debug);
 		return 0;
 	}
 
@@ -79,7 +79,7 @@ static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 		return -EINVAL;
 
 	tinyiiod_do_write_attr(iiod, device, channel,
-			output, attr, (size_t) bytes, debug);
+			       output, attr, (size_t) bytes, debug);
 	return 0;
 }
 
@@ -157,9 +157,9 @@ int tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 		char buf[32];
 
 		snprintf(buf, sizeof(buf), "%u.%u.%-7.7s\n",
-				TINYIIOD_VERSION_MAJOR,
-				TINYIIOD_VERSION_MINOR,
-				TINYIIOD_VERSION_GIT);
+			 TINYIIOD_VERSION_MAJOR,
+			 TINYIIOD_VERSION_MINOR,
+			 TINYIIOD_VERSION_GIT);
 		tinyiiod_write_string(iiod, buf);
 		return 0;
 	}
