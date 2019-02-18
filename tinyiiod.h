@@ -39,15 +39,15 @@ struct tinyiiod_ops {
 	void (*write)(const char *buf, size_t len);
 
 	ssize_t (*read_attr)(const char *device, const char *attr,
-			char *buf, size_t len, bool debug);
+			     char *buf, size_t len, bool debug);
 	ssize_t (*write_attr)(const char *device, const char *attr,
-			const char *buf, size_t len, bool debug);
+			      const char *buf, size_t len, bool debug);
 
 	ssize_t (*ch_read_attr)(const char *device, const char *channel,
-			bool ch_out, const char *attr, char *buf, size_t len);
+				bool ch_out, const char *attr, char *buf, size_t len);
 	ssize_t (*ch_write_attr)(const char *device, const char *channel,
-			bool ch_out, const char *attr,
-			const char *buf, size_t len);
+				 bool ch_out, const char *attr,
+				 const char *buf, size_t len);
 
 	int (*open)(const char *device, size_t sample_size, uint32_t mask);
 	int (*close)(const char *device);
@@ -58,7 +58,7 @@ struct tinyiiod_ops {
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,
-		const struct tinyiiod_ops *ops);
+				  const struct tinyiiod_ops *ops);
 void tinyiiod_destroy(struct tinyiiod *iiod);
 int tinyiiod_read_command(struct tinyiiod *iiod);
 

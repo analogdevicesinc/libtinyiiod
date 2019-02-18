@@ -32,7 +32,7 @@ static void write_data(const char *buf, size_t len)
 }
 
 static ssize_t read_attr(const char *device, const char *attr,
-		char *buf, size_t len, bool debug)
+			 char *buf, size_t len, bool debug)
 {
 	if (!strcmp(device, "adc") || !strcmp(device, "0")) {
 		if (debug) {
@@ -48,13 +48,13 @@ static ssize_t read_attr(const char *device, const char *attr,
 }
 
 static ssize_t write_attr(const char *device, const char *attr,
-		const char *buf, size_t len, bool debug)
+			  const char *buf, size_t len, bool debug)
 {
 	return -ENOSYS;
 }
 
 static ssize_t ch_read_attr(const char *device, const char *channel,
-		bool ch_out, const char *attr, char *buf, size_t len)
+			    bool ch_out, const char *attr, char *buf, size_t len)
 {
 	if (!strcmp(device, "adc") || !strcmp(device, "0")) {
 		if (ch_out)
@@ -65,8 +65,7 @@ static ssize_t ch_read_attr(const char *device, const char *channel,
 				return (ssize_t) snprintf(buf, len, "0.033");
 			else if (!strcmp(attr, "raw"))
 				return (ssize_t) snprintf(buf, len, "256");
-		}
-		else if (!strcmp(channel, "voltage1")) {
+		} else if (!strcmp(channel, "voltage1")) {
 			if (!strcmp(attr, "scale"))
 				return (ssize_t) snprintf(buf, len, "0.033");
 			else if (!strcmp(attr, "raw"))
@@ -78,7 +77,7 @@ static ssize_t ch_read_attr(const char *device, const char *channel,
 }
 
 static ssize_t ch_write_attr(const char *device, const char *channel,
-		bool ch_out, const char *attr, const char *buf, size_t len)
+			     bool ch_out, const char *attr, const char *buf, size_t len)
 {
 	return -ENOSYS;
 }
@@ -94,25 +93,25 @@ static const struct tinyiiod_ops ops = {
 };
 
 static const char * const xml =
-"<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE context [<!ELEMENT context "
-"(device)*><!ELEMENT device (channel | attribute | debug-attribute)*><!ELEMENT "
-"channel (scan-element?, attribute*)><!ELEMENT attribute EMPTY><!ELEMENT "
-"scan-element EMPTY><!ELEMENT debug-attribute EMPTY><!ATTLIST context name "
-"CDATA #REQUIRED description CDATA #IMPLIED><!ATTLIST device id CDATA "
-"#REQUIRED name CDATA #IMPLIED><!ATTLIST channel id CDATA #REQUIRED type "
-"(input|output) #REQUIRED name CDATA #IMPLIED><!ATTLIST scan-element index "
-"CDATA #REQUIRED format CDATA #REQUIRED scale CDATA #IMPLIED><!ATTLIST "
-"attribute name CDATA #REQUIRED filename CDATA #IMPLIED><!ATTLIST "
-"debug-attribute name CDATA #REQUIRED>]><context name=\"tiny\" "
-"description=\"Tiny IIOD\" >"
-"<device id=\"0\" name=\"adc\" >"
-"<channel id=\"voltage0\" type=\"input\" >"
-"<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
-"<channel id=\"voltage1\" type=\"input\" >"
-"<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
-"<attribute name=\"sample_rate\" />"
-"<debug-attribute name=\"direct_reg_access\" />"
-"</device></context>";
+	"<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE context [<!ELEMENT context "
+	"(device)*><!ELEMENT device (channel | attribute | debug-attribute)*><!ELEMENT "
+	"channel (scan-element?, attribute*)><!ELEMENT attribute EMPTY><!ELEMENT "
+	"scan-element EMPTY><!ELEMENT debug-attribute EMPTY><!ATTLIST context name "
+	"CDATA #REQUIRED description CDATA #IMPLIED><!ATTLIST device id CDATA "
+	"#REQUIRED name CDATA #IMPLIED><!ATTLIST channel id CDATA #REQUIRED type "
+	"(input|output) #REQUIRED name CDATA #IMPLIED><!ATTLIST scan-element index "
+	"CDATA #REQUIRED format CDATA #REQUIRED scale CDATA #IMPLIED><!ATTLIST "
+	"attribute name CDATA #REQUIRED filename CDATA #IMPLIED><!ATTLIST "
+	"debug-attribute name CDATA #REQUIRED>]><context name=\"tiny\" "
+	"description=\"Tiny IIOD\" >"
+	"<device id=\"0\" name=\"adc\" >"
+	"<channel id=\"voltage0\" type=\"input\" >"
+	"<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
+	"<channel id=\"voltage1\" type=\"input\" >"
+	"<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
+	"<attribute name=\"sample_rate\" />"
+	"<debug-attribute name=\"direct_reg_access\" />"
+	"</device></context>";
 
 static bool stop;
 
