@@ -30,3 +30,14 @@
 
 # Debug files
 *.dSYM/
+
+# cmake & build artifacts
+.project
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+tinyiiod-test
+build/
+ci/travis/build
+*.orig
