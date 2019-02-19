@@ -95,6 +95,7 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	}
 
 	buf[i] = '\0';
+
 	return (ssize_t) i;
 }
 
