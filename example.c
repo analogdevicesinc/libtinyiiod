@@ -142,5 +142,6 @@ int main(void)
 		tinyiiod_read_command(iiod);
 
 	tinyiiod_destroy(iiod);
+
 	return 0;
 }

@@ -80,6 +80,7 @@ static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 
 	tinyiiod_do_write_attr(iiod, device, channel,
 			       output, attr, (size_t) bytes, debug);
+
 	return 0;
 }
 
@@ -121,6 +122,7 @@ static int parse_open_string(struct tinyiiod *iiod, char *str)
 		return -EINVAL;
 
 	tinyiiod_do_open(iiod, device, (size_t) samples_count, mask);
+
 	return 0;
 }
 
@@ -142,6 +144,7 @@ static int parse_readbuf_string(struct tinyiiod *iiod, char *str)
 		return -EINVAL;
 
 	tinyiiod_do_readbuf(iiod, device, (size_t) bytes_count);
+
 	return 0;
 }
 
