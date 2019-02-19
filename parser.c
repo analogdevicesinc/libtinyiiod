@@ -88,7 +88,6 @@ static int parse_open_string(struct tinyiiod *iiod, char *str)
 {
 	char *device, *ptr;
 	long samples_count;
-	unsigned int i;
 	uint32_t mask = 0;
 
 	ptr = strchr(str, ' ');
@@ -105,21 +104,7 @@ static int parse_open_string(struct tinyiiod *iiod, char *str)
 
 	str = ptr + 1;
 
-	for (i = 0; i < 8; i++) {
-		char c = str[i];
-
-		if (c >= '0' && c <= '9')
-			c -= '0';
-		else if (c >= 'a' && c <= 'f')
-			c -= 'a' - 0x10;
-		else
-			return -EINVAL;
-
-		mask |= ((uint32_t) c) << ((7 - i) << 2);
-	}
-
-	if (str[8] != '\0')
-		return -EINVAL;
+	mask = strtoul(str, NULL, 16);
 
 	tinyiiod_do_open(iiod, device, (size_t) samples_count, mask);
 
