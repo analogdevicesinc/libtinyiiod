@@ -60,7 +60,7 @@ static int parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 	}
 
 	ptr = strchr(str, ' ');
-	if (!!ptr ^ write)
+	if ((!!ptr) ^ write)
 		return -EINVAL;
 
 	attr = str;
