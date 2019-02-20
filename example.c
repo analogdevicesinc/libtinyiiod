@@ -115,7 +115,7 @@ static const char * const xml =
 
 static bool stop;
 
-static void set_handler(int signal_nb, void (*handler)(int))
+static void set_handler(int32_t signal_nb, void (*handler)(int32_t))
 {
 	struct sigaction sig;
 	sigaction(signal_nb, NULL, &sig);
@@ -123,12 +123,12 @@ static void set_handler(int signal_nb, void (*handler)(int))
 	sigaction(signal_nb, &sig, NULL);
 }
 
-static void quit_all(int sig)
+static void quit_all(int32_t sig)
 {
 	stop = true;
 }
 
-int main(void)
+int32_t main(void)
 {
 	struct tinyiiod *iiod = tinyiiod_create(xml, &ops);
 
