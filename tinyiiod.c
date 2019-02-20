@@ -17,10 +17,7 @@
 
 #include "tinyiiod-private.h"
 
-#include <errno.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "compat.h"
 
 struct tinyiiod {
 	const char *xml;
@@ -46,12 +43,12 @@ void tinyiiod_destroy(struct tinyiiod *iiod)
 	free(iiod);
 }
 
-int tinyiiod_read_command(struct tinyiiod *iiod)
+int32_t tinyiiod_read_command(struct tinyiiod *iiod)
 {
 	char buf[128];
-	int ret;
+	int32_t ret;
 
-	ret = (int) tinyiiod_read_line(iiod, buf, sizeof(buf));
+	ret = tinyiiod_read_line(iiod, buf, sizeof(buf));
 	if (ret < 0)
 		return ret;
 
@@ -77,7 +74,7 @@ ssize_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
 
 ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 {
-	unsigned int i;
+	int32_t i;
 	bool found = false;
 
 	for (i = 0; i < len - 1; i++) {
@@ -96,7 +93,7 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 
 	buf[i] = '\0';
 
-	return (ssize_t) i;
+	return i;
 }
 
 ssize_t tinyiiod_write_char(struct tinyiiod *iiod, char c)
@@ -114,11 +111,11 @@ void tinyiiod_write_string(struct tinyiiod *iiod, const char *str)
 	tinyiiod_write(iiod, str, strlen(str));
 }
 
-void tinyiiod_write_value(struct tinyiiod *iiod, int value)
+void tinyiiod_write_value(struct tinyiiod *iiod, int32_t value)
 {
 	char buf[16];
 
-	snprintf(buf, sizeof(buf), "%i\n", value);
+	snprintf(buf, sizeof(buf), "%"PRIi32"\n", value);
 	tinyiiod_write_string(iiod, buf);
 }
 
@@ -144,7 +141,7 @@ void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 		ret = iiod->ops->read_attr(device, attr,
 					   buf, sizeof(buf), debug);
 
-	tinyiiod_write_value(iiod, (int) ret);
+	tinyiiod_write_value(iiod, (int32_t) ret);
 	if (ret > 0) {
 		tinyiiod_write(iiod, buf, (size_t) ret);
 		tinyiiod_write_char(iiod, '\n');
@@ -170,26 +167,26 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 	else
 		ret = iiod->ops->write_attr(device, attr, buf, bytes, debug);
 
-	tinyiiod_write_value(iiod, (int) ret);
+	tinyiiod_write_value(iiod, (int32_t) ret);
 }
 
 void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
 		      size_t sample_size, uint32_t mask)
 {
-	int ret = iiod->ops->open(device, sample_size, mask);
+	int32_t ret = iiod->ops->open(device, sample_size, mask);
 	tinyiiod_write_value(iiod, ret);
 }
 
 void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 {
-	int ret = iiod->ops->close(device);
+	int32_t ret = iiod->ops->close(device);
 	tinyiiod_write_value(iiod, ret);
 }
 
 void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 			 const char *device, size_t bytes_count)
 {
-	int ret;
+	int32_t ret;
 	char buf[256];
 	uint32_t mask;
 	bool print_mask = true;
@@ -203,7 +200,7 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 	while(bytes_count) {
 		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
-		ret = (int) iiod->ops->read_data(device, buf, bytes);
+		ret = (int32_t) iiod->ops->read_data(device, buf, bytes);
 		tinyiiod_write_value(iiod, ret);
 		if (ret < 0)
 			return;
@@ -211,7 +208,7 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 		if (print_mask) {
 			char buf_mask[10];
 
-			snprintf(buf_mask, sizeof(buf_mask), "%08x\n", mask);
+			snprintf(buf_mask, sizeof(buf_mask), "%08"PRIx32"\n", mask);
 			tinyiiod_write_string(iiod, buf_mask);
 			print_mask = false;
 		}
