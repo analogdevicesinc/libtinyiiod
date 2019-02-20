@@ -18,16 +18,7 @@
 #ifndef TINYIIOD_H
 #define TINYIIOD_H
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#if !defined(__ssize_t_defined) && !defined(_SSIZE_T_DEFINED)
-typedef long int ssize_t;
-#define __ssize_t_defined
-#define _SSIZE_T_DEFINED
-#endif
+#include "compat.h"
 
 struct tinyiiod;
 
@@ -49,17 +40,17 @@ struct tinyiiod_ops {
 				 bool ch_out, const char *attr,
 				 const char *buf, size_t len);
 
-	int (*open)(const char *device, size_t sample_size, uint32_t mask);
-	int (*close)(const char *device);
+	int32_t (*open)(const char *device, size_t sample_size, uint32_t mask);
+	int32_t (*close)(const char *device);
 
 	ssize_t (*read_data)(const char *device, char *buf, size_t bytes_count);
 
-	int (*get_mask)(const char *device, uint32_t *mask);
+	int32_t (*get_mask)(const char *device, uint32_t *mask);
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,
 				  const struct tinyiiod_ops *ops);
 void tinyiiod_destroy(struct tinyiiod *iiod);
-int tinyiiod_read_command(struct tinyiiod *iiod);
+int32_t tinyiiod_read_command(struct tinyiiod *iiod);
 
 #endif /* TINYIIOD_H */
