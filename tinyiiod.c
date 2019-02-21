@@ -22,6 +22,7 @@
 struct tinyiiod {
 	const char *xml;
 	const struct tinyiiod_ops *ops;
+	char *buf;
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,
@@ -32,6 +33,7 @@ struct tinyiiod * tinyiiod_create(const char *xml,
 	if (!iiod)
 		return NULL;
 
+	iiod->buf = malloc(IIOD_BUFFER_SIZE);
 	iiod->xml = xml;
 	iiod->ops = ops;
 
@@ -40,6 +42,7 @@ struct tinyiiod * tinyiiod_create(const char *xml,
 
 void tinyiiod_destroy(struct tinyiiod *iiod)
 {
+	free(iiod->buf);
 	free(iiod);
 }
 
@@ -134,20 +137,19 @@ void tinyiiod_write_xml(struct tinyiiod *iiod)
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 			   const char *channel, bool ch_out, const char *attr, bool debug)
 {
-	char buf[128];
 	ssize_t ret;
 
 	if (channel)
 		ret = iiod->ops->ch_read_attr(device, channel,
-					      ch_out, attr, buf, sizeof(buf));
+					      ch_out, attr, iiod->buf, IIOD_BUFFER_SIZE);
 	else
 		ret = iiod->ops->read_attr(device, attr,
-					   buf, sizeof(buf), debug);
+					   iiod->buf, IIOD_BUFFER_SIZE, debug);
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 	if (ret > 0) {
-		buf[ret] = '\n';
-		tinyiiod_write(iiod, buf, (size_t) ret + 1);
+		iiod->buf[ret] = '\n';
+		tinyiiod_write(iiod, iiod->buf, (size_t) ret + 1);
 	}
 }
 
@@ -155,20 +157,19 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 			    const char *channel, bool ch_out, const char *attr,
 			    size_t bytes, bool debug)
 {
-	char buf[128];
 	ssize_t ret;
 
-	if (bytes > sizeof(buf) - 1)
-		bytes = sizeof(buf) - 1;
+	if (bytes > IIOD_BUFFER_SIZE - 1)
+		bytes = IIOD_BUFFER_SIZE - 1;
 
-	tinyiiod_read(iiod, buf, bytes);
-	buf[bytes] = '\0';
+	tinyiiod_read(iiod, iiod->buf, bytes);
+	iiod->buf[bytes] = '\0';
 
 	if (channel)
 		ret = iiod->ops->ch_write_attr(device, channel, ch_out,
-					       attr, buf, bytes);
+					       attr, iiod->buf, bytes);
 	else
-		ret = iiod->ops->write_attr(device, attr, buf, bytes, debug);
+		ret = iiod->ops->write_attr(device, attr, iiod->buf, bytes, debug);
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 }
