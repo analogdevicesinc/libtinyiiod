@@ -77,6 +77,9 @@ int32_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	int32_t i;
 	bool found = false;
 
+	if(iiod->ops->read_line)
+		return iiod->ops->read_line(buf, len);
+
 	for (i = 0; i < len - 1; i++) {
 		buf[i] = tinyiiod_read_char(iiod);
 
@@ -143,8 +146,8 @@ void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 	if (ret > 0) {
-		tinyiiod_write(iiod, buf, (size_t) ret);
-		tinyiiod_write_char(iiod, '\n');
+		buf[ret] = '\n';
+		tinyiiod_write(iiod, buf, (size_t) ret + 1);
 	}
 }
 
@@ -183,37 +186,38 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 	tinyiiod_write_value(iiod, ret);
 }
 
-void tinyiiod_do_readbuf(struct tinyiiod *iiod,
-			 const char *device, size_t bytes_count)
+int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
+			    const char *device, size_t bytes_count)
 {
 	int32_t ret;
-	char buf[256];
+	char *buf = (char*)malloc(bytes_count);
 	uint32_t mask;
-	bool print_mask = true;
+	char buf_mask[10];
+
+	if(!buf) {
+		ret = -ENOMEM;
+		tinyiiod_write_value(iiod, ret);
+		goto err_close;
+	}
 
 	ret = iiod->ops->get_mask(device, &mask);
 	if (ret < 0) {
 		tinyiiod_write_value(iiod, ret);
-		return;
+		goto err_close;
 	}
 
-	while(bytes_count) {
-		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
-
-		ret = (int32_t) iiod->ops->read_data(device, buf, bytes);
+	ret = (int) iiod->ops->read_data(device, buf, bytes_count);
+	if (ret < 0) {
 		tinyiiod_write_value(iiod, ret);
-		if (ret < 0)
-			return;
-
-		if (print_mask) {
-			char buf_mask[10];
-
-			snprintf(buf_mask, sizeof(buf_mask), "%08"PRIx32"\n", mask);
-			tinyiiod_write_string(iiod, buf_mask);
-			print_mask = false;
-		}
-
-		tinyiiod_write(iiod, buf, (size_t) ret);
-		bytes_count -= (size_t) ret;
+		goto err_close;
 	}
+
+	tinyiiod_write_value(iiod, ret);
+	snprintf(buf_mask, sizeof(buf_mask), "%08"PRIx32"\n", mask);
+	tinyiiod_write_string(iiod, buf_mask);
+	tinyiiod_write(iiod, buf, (size_t) ret);
+
+err_close:
+	free(buf);
+	return ret;
 }

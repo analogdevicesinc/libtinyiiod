@@ -25,6 +25,7 @@ struct tinyiiod;
 struct tinyiiod_ops {
 	/* Read from the input stream */
 	void (*read)(char *buf, size_t len);
+	int32_t (*read_line)(char *buf, size_t len);
 
 	/* Write to the output stream */
 	void (*write)(const char *buf, size_t len);
