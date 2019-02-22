@@ -21,14 +21,14 @@
 #include <stdio.h>
 #include <string.h>
 
-static void read_data(char *buf, size_t len)
+static ssize_t read_data(char *buf, size_t len)
 {
-	fread(buf, 1, len, stdin);
+	return fread(buf, 1, len, stdin);
 }
 
-static void write_data(const char *buf, size_t len)
+static ssize_t write_data(const char *buf, size_t len)
 {
-	fwrite(buf, 1, len, stdout);
+	return fwrite(buf, 1, len, stdout);
 }
 
 static ssize_t read_attr(const char *device, const char *attr,
