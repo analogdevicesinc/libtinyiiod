@@ -67,9 +67,9 @@ char tinyiiod_read_char(struct tinyiiod *iiod)
 	return c;
 }
 
-void tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
+int32_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
 {
-	iiod->ops->read(buf, len);
+	return iiod->ops->read(buf, len);
 }
 
 int32_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)

@@ -21,9 +21,9 @@
 #include <stdio.h>
 #include <string.h>
 
-static void read_data(char *buf, size_t len)
+static int32_t read_data(char *buf, size_t len)
 {
-	fread(buf, 1, len, stdin);
+	return fread(buf, 1, len, stdin);
 }
 
 static void write_data(const char *buf, size_t len)
