@@ -26,9 +26,12 @@ struct tinyiiod_ops {
 	/* Read from the input stream */
 	void (*read)(char *buf, size_t len);
 	int32_t (*read_line)(char *buf, size_t len);
+	int32_t (*read_nonblocking)(char *buf, size_t len);
+	int32_t (*read_wait)(size_t len);
 
 	/* Write to the output stream */
 	void (*write)(const char *buf, size_t len);
+	int32_t (*close_instance)();
 
 	ssize_t (*read_attr)(const char *device, const char *attr,
 			     char *buf, size_t len, bool debug);
@@ -45,6 +48,8 @@ struct tinyiiod_ops {
 	int32_t (*close)(const char *device);
 
 	ssize_t (*read_data)(const char *device, char *buf, size_t bytes_count);
+	ssize_t (*write_data)(const char *device, const char *buf,
+			      size_t bytes_count);
 
 	int32_t (*get_mask)(const char *device, uint32_t *mask);
 };

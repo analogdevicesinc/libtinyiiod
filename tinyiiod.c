@@ -99,6 +99,16 @@ int32_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	return i;
 }
 
+int32_t tinyiiod_read_nonblocking(struct tinyiiod *iiod, char *buf, size_t len)
+{
+	return iiod->ops->read_nonblocking(buf, len);
+}
+
+int32_t tinyiiod_read_wait(struct tinyiiod *iiod, size_t len)
+{
+	return iiod->ops->read_wait(len);
+}
+
 void tinyiiod_write_char(struct tinyiiod *iiod, char c)
 {
 	iiod->ops->write(&c, 1);
@@ -184,6 +194,40 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 {
 	int32_t ret = iiod->ops->close(device);
 	tinyiiod_write_value(iiod, ret);
+}
+
+int32_t tinyiiod_do_close_instance(struct tinyiiod *iiod)
+{
+	return iiod->ops->close_instance();
+}
+
+int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
+			     const char *device, size_t bytes_count)
+{
+	int32_t ret;
+	char *pbuffer = (char*)malloc(bytes_count);
+	if(!pbuffer) {
+		ret = -ENOMEM;
+		goto err_close;
+	}
+	ret = tinyiiod_read_nonblocking(iiod, pbuffer, bytes_count);
+	if(ret < 0)
+		goto err_close;
+	tinyiiod_write_value(iiod, (int) bytes_count);
+	size_t bytes_received = tinyiiod_read_wait(iiod, bytes_count);
+	if(bytes_count != bytes_received) {
+		ret = -EPIPE;
+		goto err_close;
+	}
+
+	iiod->ops->write_data(device, pbuffer, bytes_count);
+	if(ret < 0)
+		goto err_close;
+	tinyiiod_write_value(iiod, (int) bytes_count);
+
+err_close:
+	free(pbuffer);
+	return ret;
 }
 
 int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
