@@ -70,9 +70,9 @@ char tinyiiod_read_char(struct tinyiiod *iiod)
 	return c;
 }
 
-void tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
+ssize_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
 {
-	iiod->ops->read(buf, len);
+	return iiod->ops->read(buf, len);
 }
 
 ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
@@ -99,14 +99,14 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	return (ssize_t) i;
 }
 
-void tinyiiod_write_char(struct tinyiiod *iiod, char c)
+ssize_t tinyiiod_write_char(struct tinyiiod *iiod, char c)
 {
-	iiod->ops->write(&c, 1);
+	return iiod->ops->write(&c, 1);
 }
 
-void tinyiiod_write(struct tinyiiod *iiod, const char *data, size_t len)
+ssize_t tinyiiod_write(struct tinyiiod *iiod, const char *data, size_t len)
 {
-	iiod->ops->write(data, len);
+	return iiod->ops->write(data, len);
 }
 
 void tinyiiod_write_string(struct tinyiiod *iiod, const char *str)

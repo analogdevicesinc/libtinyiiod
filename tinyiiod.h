@@ -33,10 +33,10 @@ struct tinyiiod;
 
 struct tinyiiod_ops {
 	/* Read from the input stream */
-	void (*read)(char *buf, size_t len);
+	ssize_t (*read)(char *buf, size_t len);
 
 	/* Write to the output stream */
-	void (*write)(const char *buf, size_t len);
+	ssize_t (*write)(const char *buf, size_t len);
 
 	ssize_t (*read_attr)(const char *device, const char *attr,
 			     char *buf, size_t len, bool debug);
