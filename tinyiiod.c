@@ -77,6 +77,9 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	int32_t i;
 	bool found = false;
 
+	if (iiod->ops->read_line)
+		return iiod->ops->read_line(buf, len);
+
 	for (i = 0; i < len - 1; i++) {
 		buf[i] = tinyiiod_read_char(iiod);
 
