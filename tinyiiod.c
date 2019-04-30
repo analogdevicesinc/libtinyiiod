@@ -146,8 +146,8 @@ void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 	if (ret > 0) {
-		tinyiiod_write(iiod, buf, (size_t) ret);
-		tinyiiod_write_char(iiod, '\n');
+		buf[ret] = '\n';
+		tinyiiod_write(iiod, buf, (size_t) ret + 1);
 	}
 }
 
