@@ -186,8 +186,8 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 	tinyiiod_write_value(iiod, ret);
 }
 
-void tinyiiod_do_readbuf(struct tinyiiod *iiod,
-			 const char *device, size_t bytes_count)
+int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
+			    const char *device, size_t bytes_count)
 {
 	int32_t ret;
 	char buf[256];
@@ -196,17 +196,16 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 
 	ret = iiod->ops->get_mask(device, &mask);
 	if (ret < 0) {
-		tinyiiod_write_value(iiod, ret);
-		return;
+		return ret;
 	}
 
 	while(bytes_count) {
 		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
-		ret = (int32_t) iiod->ops->read_data(device, buf, bytes);
+		ret = iiod->ops->read_data(device, buf, bytes);
 		tinyiiod_write_value(iiod, ret);
 		if (ret < 0)
-			return;
+			return ret;
 
 		if (print_mask) {
 			char buf_mask[10];
@@ -219,4 +218,6 @@ void tinyiiod_do_readbuf(struct tinyiiod *iiod,
 		tinyiiod_write(iiod, buf, (size_t) ret);
 		bytes_count -= (size_t) ret;
 	}
+
+	return ret;
 }
