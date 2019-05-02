@@ -193,6 +193,7 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 	char buf[256];
 	uint32_t mask;
 	bool print_mask = true;
+	size_t offset = 0;
 
 	ret = iiod->ops->get_mask(device, &mask);
 	if (ret < 0) {
@@ -202,7 +203,8 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 	while(bytes_count) {
 		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
-		ret = iiod->ops->read_data(device, buf, bytes);
+		ret = (int) iiod->ops->read_data(device, buf, offset, bytes);
+		offset += bytes;
 		tinyiiod_write_value(iiod, ret);
 		if (ret < 0)
 			return ret;
