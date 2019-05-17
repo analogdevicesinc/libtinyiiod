@@ -186,6 +186,16 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 	tinyiiod_write_value(iiod, ret);
 }
 
+int32_t tinyiiod_do_open_instance(struct tinyiiod *iiod)
+{
+	return iiod->ops->open_instance();
+}
+
+int32_t tinyiiod_do_close_instance(struct tinyiiod *iiod)
+{
+	return iiod->ops->close_instance();
+}
+
 int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
 			     const char *device, size_t bytes_count)
 {

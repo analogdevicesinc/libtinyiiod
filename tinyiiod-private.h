@@ -42,6 +42,10 @@ void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
 		      size_t sample_size, uint32_t mask);
 void tinyiiod_do_close(struct tinyiiod *iiod, const char *device);
 
+int32_t tinyiiod_do_open_instance(struct tinyiiod *iiod);
+
+int32_t tinyiiod_do_close_instance(struct tinyiiod *iiod);
+
 int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 			    const char *device, size_t bytes_count);
 
