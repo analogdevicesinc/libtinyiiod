@@ -238,7 +238,7 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 	}
 	if (iiod->ops->transfer_dev_to_mem)
 		ret = iiod->ops->transfer_dev_to_mem(device, bytes_count);
-	while(bytes_count) {
+	while (bytes_count) {
 		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
 		ret = (int) iiod->ops->read_data(device, buf, offset, bytes);
