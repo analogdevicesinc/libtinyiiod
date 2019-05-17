@@ -49,6 +49,10 @@ struct tinyiiod_ops {
 	ssize_t (*read_data)(const char *device, char *buf, size_t offset,
 			     size_t bytes_count);
 
+	ssize_t (*transfer_mem_to_dev)(const char *device, size_t bytes_count);
+	ssize_t (*write_data)(const char *device, const char *buf, size_t offset,
+			      size_t bytes_count);
+
 	int32_t (*get_mask)(const char *device, uint32_t *mask);
 };
 

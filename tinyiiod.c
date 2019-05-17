@@ -186,6 +186,33 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 	tinyiiod_write_value(iiod, ret);
 }
 
+int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
+			     const char *device, size_t bytes_count)
+{
+	size_t bytes, offset = 0, total_bytes = bytes_count;
+	char buf[256];
+	int32_t ret;
+
+	tinyiiod_write_value(iiod, bytes_count);
+	while (bytes_count) {
+		bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
+		ret = tinyiiod_read(iiod, buf, bytes);
+		if (ret > 0) {
+			ret = iiod->ops->write_data(device, buf, offset, ret);
+			offset += ret;
+			if (ret < 0)
+				return ret;
+			bytes_count -= ret;
+		} else
+			return ret;
+	}
+	if (iiod->ops->transfer_mem_to_dev)
+		ret = iiod->ops->transfer_mem_to_dev(device, total_bytes);
+	tinyiiod_write_value(iiod, (int) total_bytes);
+
+	return ret;
+}
+
 int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 			    const char *device, size_t bytes_count)
 {
