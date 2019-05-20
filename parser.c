@@ -126,9 +126,7 @@ static int32_t parse_readbuf_string(struct tinyiiod *iiod, char *str)
 	if (str == ptr || *ptr != '\0' || bytes_count < 0)
 		return -EINVAL;
 
-	tinyiiod_do_readbuf(iiod, device, (size_t) bytes_count);
-
-	return 0;
+	return tinyiiod_do_readbuf(iiod, device, (size_t) bytes_count);
 }
 
 int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)

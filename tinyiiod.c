@@ -109,17 +109,17 @@ ssize_t tinyiiod_write(struct tinyiiod *iiod, const char *data, size_t len)
 	return iiod->ops->write(data, len);
 }
 
-void tinyiiod_write_string(struct tinyiiod *iiod, const char *str)
+ssize_t tinyiiod_write_string(struct tinyiiod *iiod, const char *str)
 {
-	tinyiiod_write(iiod, str, strlen(str));
+	return tinyiiod_write(iiod, str, strlen(str));
 }
 
-void tinyiiod_write_value(struct tinyiiod *iiod, int32_t value)
+ssize_t tinyiiod_write_value(struct tinyiiod *iiod, int32_t value)
 {
 	char buf[16];
 
 	snprintf(buf, sizeof(buf), "%"PRIi32"\n", value);
-	tinyiiod_write_string(iiod, buf);
+	return tinyiiod_write_string(iiod, buf);
 }
 
 void tinyiiod_write_xml(struct tinyiiod *iiod)
