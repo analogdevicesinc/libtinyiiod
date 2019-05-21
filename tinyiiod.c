@@ -261,3 +261,14 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 
 	return ret;
 }
+
+int32_t tinyiiod_set_timeout(struct tinyiiod *iiod, uint32_t timeout)
+{
+	int32_t ret = 0;
+
+	if (iiod->ops->set_timeout)
+		ret = iiod->ops->set_timeout(timeout);
+	tinyiiod_write_value(iiod, ret);
+
+	return ret;
+}

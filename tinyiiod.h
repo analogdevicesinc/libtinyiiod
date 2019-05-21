@@ -57,6 +57,8 @@ struct tinyiiod_ops {
 			      size_t bytes_count);
 
 	int32_t (*get_mask)(const char *device, uint32_t *mask);
+
+	int32_t (*set_timeout)(uint32_t timeout);
 };
 
 struct tinyiiod * tinyiiod_create(const char *xml,

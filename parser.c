@@ -109,6 +109,13 @@ static int32_t parse_open_string(struct tinyiiod *iiod, char *str)
 	return 0;
 }
 
+static int32_t parse_timeout_string(struct tinyiiod *iiod, char *str)
+{
+	uint32_t timeout = strtoul(str, NULL, 10);
+
+	return tinyiiod_set_timeout(iiod, timeout);
+}
+
 static int32_t parse_readbuf_string(struct tinyiiod *iiod, char *str)
 {
 	char *device, *ptr;
@@ -169,6 +176,9 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 
 	if (!strncmp(str, "READBUF ", sizeof("READBUF ") -1))
 		return parse_readbuf_string(iiod, str + sizeof("READBUF ") - 1);
+
+	if (!strncmp(str, "TIMEOUT ", sizeof("TIMEOUT ") - 1))
+		return parse_timeout_string(iiod, str + sizeof("TIMEOUT ") - 1);
 
 	return -EINVAL;
 }
