@@ -203,5 +203,11 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 	if (!strncmp(str, "WRITEBUF ", sizeof("WRITEBUF ") -1))
 		return parse_writebuf_string(iiod, str + sizeof("WRITEBUF ") - 1);
 
+	if (!strncmp(str, "EXIT", sizeof("EXIT") - 1))
+		return tinyiiod_do_close_instance(iiod);
+
+	if (!strncmp(str, "GETTRIG", sizeof("GETTRIG") - 1))
+		tinyiiod_write_value(iiod, -ENODEV);
+
 	return -EINVAL;
 }
