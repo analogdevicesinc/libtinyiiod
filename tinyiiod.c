@@ -88,7 +88,7 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 	for (i = 0; i < len - 1; i++) {
 		buf[i] = tinyiiod_read_char(iiod);
 
-		if (buf[i] != '\n' && buf[i] != '\r')
+		if (buf[i] != '\n')
 			found = true;
 		else if (found)
 			break;
@@ -99,7 +99,7 @@ ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 		return -EIO;
 	}
 
-	buf[i] = '\0';
+	buf[i - 1] = '\0';
 
 	return i;
 }
