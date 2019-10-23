@@ -20,13 +20,13 @@
 #include "compat.h"
 
 struct tinyiiod {
-	const char *xml;
-	const struct tinyiiod_ops *ops;
+	char *xml;
+	struct tinyiiod_ops *ops;
 	char *buf;
 };
 
-struct tinyiiod * tinyiiod_create(const char *xml,
-				  const struct tinyiiod_ops *ops)
+struct tinyiiod * tinyiiod_create(char *xml,
+				  struct tinyiiod_ops *ops)
 {
 	struct tinyiiod *iiod = malloc(sizeof(*iiod));
 
@@ -42,6 +42,8 @@ struct tinyiiod * tinyiiod_create(const char *xml,
 
 void tinyiiod_destroy(struct tinyiiod *iiod)
 {
+	free(iiod->xml);
+	free(iiod->ops);
 	free(iiod->buf);
 	free(iiod);
 }
