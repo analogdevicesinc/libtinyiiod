@@ -82,16 +82,6 @@ static ssize_t ch_write_attr(const char *device, const char *channel,
 	return -ENOSYS;
 }
 
-static const struct tinyiiod_ops ops = {
-	.read = read_data,
-	.write = write_data,
-
-	.read_attr = read_attr,
-	.write_attr = write_attr,
-	.ch_read_attr = ch_read_attr,
-	.ch_write_attr = ch_write_attr,
-};
-
 static const char * const xml =
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE context [<!ELEMENT context "
 	"(device)*><!ELEMENT device (channel | attribute | debug-attribute)*><!ELEMENT "
@@ -113,6 +103,28 @@ static const char * const xml =
 	"<debug-attribute name=\"direct_reg_access\" />"
 	"</device></context>";
 
+static ssize_t get_xml(char **outxml)
+{
+
+	*outxml = calloc(1, strlen(xml) + 1);
+	if (!(*outxml))
+		return -ENOMEM;
+	memcpy(*outxml, xml, strlen(xml));
+
+	return 0;
+}
+
+static const struct tinyiiod_ops ops = {
+	.read = read_data,
+	.write = write_data,
+
+	.read_attr = read_attr,
+	.write_attr = write_attr,
+	.ch_read_attr = ch_read_attr,
+	.ch_write_attr = ch_write_attr,
+	.get_xml = get_xml,
+};
+
 static bool stop;
 
 static void set_handler(int32_t signal_nb, void (*handler)(int32_t))
@@ -130,7 +142,7 @@ static void quit_all(int32_t sig)
 
 int32_t main(void)
 {
-	struct tinyiiod *iiod = tinyiiod_create(xml, &ops);
+	struct tinyiiod *iiod = tinyiiod_create(&ops);
 
 	set_handler(SIGHUP, &quit_all);
 	set_handler(SIGPIPE, &quit_all);
