@@ -59,10 +59,11 @@ struct tinyiiod_ops {
 	int32_t (*get_mask)(const char *device, uint32_t *mask);
 
 	int32_t (*set_timeout)(uint32_t timeout);
+
+	ssize_t (*get_xml)(char **outxml);
 };
 
-struct tinyiiod * tinyiiod_create(char *xml,
-				  struct tinyiiod_ops *ops);
+struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops);
 void tinyiiod_destroy(struct tinyiiod *iiod);
 int32_t tinyiiod_read_command(struct tinyiiod *iiod);
 

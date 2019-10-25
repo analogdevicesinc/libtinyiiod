@@ -20,13 +20,11 @@
 #include "compat.h"
 
 struct tinyiiod {
-	char *xml;
 	struct tinyiiod_ops *ops;
 	char *buf;
 };
 
-struct tinyiiod * tinyiiod_create(char *xml,
-				  struct tinyiiod_ops *ops)
+struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops)
 {
 	struct tinyiiod *iiod = malloc(sizeof(*iiod));
 
@@ -34,7 +32,6 @@ struct tinyiiod * tinyiiod_create(char *xml,
 		return NULL;
 
 	iiod->buf = malloc(IIOD_BUFFER_SIZE);
-	iiod->xml = xml;
 	iiod->ops = ops;
 
 	return iiod;
@@ -42,7 +39,6 @@ struct tinyiiod * tinyiiod_create(char *xml,
 
 void tinyiiod_destroy(struct tinyiiod *iiod)
 {
-	free(iiod->xml);
 	free(iiod->ops);
 	free(iiod->buf);
 	free(iiod);
@@ -129,11 +125,14 @@ ssize_t tinyiiod_write_value(struct tinyiiod *iiod, int32_t value)
 
 void tinyiiod_write_xml(struct tinyiiod *iiod)
 {
-	size_t len = strlen(iiod->xml);
+	char *xml;
+	iiod->ops->get_xml(&xml);
+	size_t len = strlen(xml);
 
 	tinyiiod_write_value(iiod, len);
-	tinyiiod_write(iiod, iiod->xml, len);
+	tinyiiod_write(iiod, xml, len);
 	tinyiiod_write_char(iiod, '\n');
+	free(xml);
 }
 
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
