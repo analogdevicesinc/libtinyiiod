@@ -207,7 +207,7 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 		return tinyiiod_do_close_instance(iiod);
 
 	if (!strncmp(str, "GETTRIG", sizeof("GETTRIG") - 1))
-		tinyiiod_write_value(iiod, -ENODEV);
+		return tinyiiod_write_value(iiod, -ENODEV);
 
 	return -EINVAL;
 }
