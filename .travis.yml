@@ -2,14 +2,13 @@ language: c
 
 sudo: required
 
-matrix:
-  include:
-    - os: linux
-      env: BUILD_TYPE=astyle
-    - os: linux
-      compiler: gcc
-    - os: linux
-      compiler: clang
+os: linux
+
+env:
+  matrix:
+    - BUILD_TYPE=astyle
+    - BUILD_TYPE=cppcheck
+    - BUILD_TYPE=tinyiiod
 
 script:
   - ./ci/travis/run_build.sh
