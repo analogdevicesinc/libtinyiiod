@@ -35,7 +35,6 @@
 .project
 CMakeCache.txt
 CMakeFiles
-Makefile
 cmake_install.cmake
 tinyiiod-test
 build/
