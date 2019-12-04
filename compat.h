@@ -44,9 +44,13 @@ typedef int bool;
 
 #define NULL (void*)0
 
-#define EIO 5	/* I/O error */
+#define ENOENT		2	/* No such file or directory */
+#define EIO		5	/* I/O error */
+#define ENODEV		19	/* No such device */
 #define EINVAL		22	/* Invalid argument */
+#define ENOSYS		38	/* Function not implemented */
 
+#define PRIi32		"li"
 # define PRIx32		"x"
 # define PRIu16		"u"
 #endif //_USE_STD_INT_TYPES
