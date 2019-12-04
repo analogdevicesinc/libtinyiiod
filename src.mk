@@ -1,3 +1,4 @@
-SRCS := $(ROOT)/example.c			\
-	$(ROOT)/parser.c			\
+SRCS := $(ROOT)/parser.c			\
 	$(ROOT)/tinyiiod.c
+
+UTESTS := example
