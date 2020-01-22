@@ -203,7 +203,7 @@ int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
 {
 	size_t bytes, offset = 0, total_bytes = bytes_count;
 	char buf[256];
-	int32_t ret;
+	int32_t ret = 0;
 
 	tinyiiod_write_value(iiod, bytes_count);
 	while (bytes_count) {
