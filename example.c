@@ -114,7 +114,7 @@ static ssize_t get_xml(char **outxml)
 	return 0;
 }
 
-static const struct tinyiiod_ops ops = {
+static struct tinyiiod_ops ops = {
 	.read = read_data,
 	.write = write_data,
 
