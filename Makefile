@@ -6,11 +6,7 @@ ROOT = $(CURDIR)
 
 # Include
 include $(ROOT)/src.mk
-
-# Local variables
-TINYIIOD_VERSION_MAJOR = 0
-TINYIIOD_VERSION_MINOR = 1
-TINYIIOD_VERSION = $(TINYIIOD_VERSION_MAJOR).$(TINYIIOD_VERSION_MINOR)
+include Makefile_iio.variables
 
 LIB_NAME = libtinyiiod
 
@@ -21,10 +17,6 @@ INC_DIR = $(ROOT)
 LIB_DIR = $(BUILD)
 OBJ_DIR = $(BUILD)/obj
 TST_DIR = $(BUILD)/unit_tests
-
-BUFF_SIZE ?= 0x1000
-STD_TYPES ?= true
-
 
 CC ?= gcc
 LD = $(CC)
@@ -44,14 +36,6 @@ CFLAGS ?= -Wall 							\
 	  -Wno-unused-parameter
 LDFLAGS = -L $(LIB_DIR)							\
 	  -ltinyiiod
-IIO_DEFS = -D TINYIIOD_VERSION_MAJOR=$(TINYIIOD_VERSION_MAJOR)		\
-	   -D TINYIIOD_VERSION_MINOR=$(TINYIIOD_VERSION_MINOR)		\
-	   -D TINYIIOD_VERSION_GIT=0x$(shell git rev-parse --short HEAD)\
-	   -D IIOD_BUFFER_SIZE=$(BUFF_SIZE)
-
-ifeq (true,$(strip $(STD_TYPES)))
-IIO_DEFS += -D _USE_STD_INT_TYPES
-endif
 
 OBJS = $(addprefix $(OBJ_DIR)/,$(notdir $(SRCS:.c=.o)))
 
