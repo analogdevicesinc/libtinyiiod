@@ -193,12 +193,18 @@ void tinyiiod_do_close(struct tinyiiod *iiod, const char *device)
 
 int32_t tinyiiod_do_open_instance(struct tinyiiod *iiod)
 {
-	return iiod->ops->open_instance();
+	if (iiod->ops->open_instance)
+		return iiod->ops->open_instance();
+
+	return 0;
 }
 
 int32_t tinyiiod_do_close_instance(struct tinyiiod *iiod)
 {
-	return iiod->ops->close_instance();
+	if (iiod->ops->close_instance)
+		return iiod->ops->close_instance();
+
+	return 0;
 }
 
 int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
