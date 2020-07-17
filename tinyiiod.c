@@ -63,14 +63,6 @@ int32_t tinyiiod_read_command(struct tinyiiod *iiod)
 	return ret;
 }
 
-char tinyiiod_read_char(struct tinyiiod *iiod)
-{
-	char c;
-
-	iiod->ops->read(&c, 1);
-	return c;
-}
-
 ssize_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
 {
 	return iiod->ops->read(buf, len);
@@ -78,15 +70,19 @@ ssize_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
 
 ssize_t tinyiiod_read_line(struct tinyiiod *iiod, char *buf, size_t len)
 {
+	char ch;
 	uint32_t i;
 	bool found = false;
+	int32_t ret;
 
 	if (iiod->ops->read_line)
 		return iiod->ops->read_line(buf, len);
 
 	for (i = 0; i < len - 1; i++) {
-		buf[i] = tinyiiod_read_char(iiod);
-
+		ret = iiod->ops->read(&ch, 1);
+		if (ret <= 0)
+			return -EIO;
+		buf[i] = ch;
 		if (buf[i] != '\n')
 			found = true;
 		else if (found)
