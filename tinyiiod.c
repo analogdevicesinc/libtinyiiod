@@ -43,7 +43,6 @@ struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops)
 
 void tinyiiod_destroy(struct tinyiiod *iiod)
 {
-	free(iiod->ops);
 	free(iiod->buf);
 	free(iiod);
 }
