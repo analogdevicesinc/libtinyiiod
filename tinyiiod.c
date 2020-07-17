@@ -32,6 +32,10 @@ struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops)
 		return NULL;
 
 	iiod->buf = malloc(IIOD_BUFFER_SIZE);
+	if (!iiod->buf) {
+		free(iiod);
+		return NULL;
+	}
 	iiod->ops = ops;
 
 	return iiod;
