@@ -136,7 +136,6 @@ void tinyiiod_write_xml(struct tinyiiod *iiod)
 	tinyiiod_write_value(iiod, len);
 	tinyiiod_write(iiod, xml, len);
 	tinyiiod_write_char(iiod, '\n');
-	free(xml);
 }
 
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
