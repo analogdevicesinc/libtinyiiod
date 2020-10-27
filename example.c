@@ -32,15 +32,18 @@ static ssize_t write_data(const char *buf, size_t len)
 }
 
 static ssize_t read_attr(const char *device, const char *attr,
-			 char *buf, size_t len, bool debug)
+			 char *buf, size_t len, enum iio_attr_type type)
 {
 	if (!strcmp(device, "adc") || !strcmp(device, "0")) {
-		if (debug) {
-			if (!strcmp(attr, "direct_reg_access"))
-				return (ssize_t) snprintf(buf, len, "0");
-		} else {
-			if (!strcmp(attr, "sample_rate"))
-				return (ssize_t) snprintf(buf, len, "1000");
+		switch (type) {
+		case IIO_ATTR_TYPE_DEVICE:
+			return (ssize_t) snprintf(buf, len, "1000");
+		case IIO_ATTR_TYPE_DEBUG:
+			return (ssize_t) snprintf(buf, len, "0");
+		case IIO_ATTR_TYPE_BUFFER:
+			return (ssize_t) snprintf(buf, len, "8");
+		default:
+			return -ENOENT;
 		}
 	}
 
@@ -48,7 +51,7 @@ static ssize_t read_attr(const char *device, const char *attr,
 }
 
 static ssize_t write_attr(const char *device, const char *attr,
-			  const char *buf, size_t len, bool debug)
+			  const char *buf, size_t len, enum iio_attr_type type)
 {
 	return -ENOSYS;
 }
@@ -84,15 +87,16 @@ static ssize_t ch_write_attr(const char *device, const char *channel,
 
 static const char * const xml =
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE context [<!ELEMENT context "
-	"(device)*><!ELEMENT device (channel | attribute | debug-attribute)*><!ELEMENT "
+	"(device)*><!ELEMENT device (channel | attribute | debug-attribute | buffer-attribute)*><!ELEMENT "
 	"channel (scan-element?, attribute*)><!ELEMENT attribute EMPTY><!ELEMENT "
-	"scan-element EMPTY><!ELEMENT debug-attribute EMPTY><!ATTLIST context name "
+	"scan-element EMPTY><!ELEMENT debug-attribute EMPTY><!ELEMENT buffer-attribute EMPTY><!ATTLIST context name "
 	"CDATA #REQUIRED description CDATA #IMPLIED><!ATTLIST device id CDATA "
 	"#REQUIRED name CDATA #IMPLIED><!ATTLIST channel id CDATA #REQUIRED type "
 	"(input|output) #REQUIRED name CDATA #IMPLIED><!ATTLIST scan-element index "
 	"CDATA #REQUIRED format CDATA #REQUIRED scale CDATA #IMPLIED><!ATTLIST "
 	"attribute name CDATA #REQUIRED filename CDATA #IMPLIED><!ATTLIST "
-	"debug-attribute name CDATA #REQUIRED>]><context name=\"tiny\" "
+	"debug-attribute name CDATA #REQUIRED><!ATTLIST buffer-attribute name "
+	"CDATA #REQUIRED value CDATA #IMPLIED>]><context name=\"tiny\" "
 	"description=\"Tiny IIOD\" >"
 	"<device id=\"0\" name=\"adc\" >"
 	"<channel id=\"voltage0\" type=\"input\" >"
@@ -101,6 +105,7 @@ static const char * const xml =
 	"<attribute name=\"scale\" /><attribute name=\"raw\" /></channel>"
 	"<attribute name=\"sample_rate\" />"
 	"<debug-attribute name=\"direct_reg_access\" />"
+	"<buffer-attribute name=\"length_align_bytes\" />"
 	"</device></context>";
 
 static ssize_t get_xml(char **outxml)
