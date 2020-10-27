@@ -22,6 +22,12 @@
 
 struct tinyiiod;
 
+enum iio_attr_type {
+	IIO_ATTR_TYPE_DEVICE = 0,
+	IIO_ATTR_TYPE_DEBUG = 1,
+	IIO_ATTR_TYPE_BUFFER = 2,
+};
+
 struct tinyiiod_ops {
 	/* Read from the input stream */
 	ssize_t (*read)(char *buf, size_t len);
@@ -35,9 +41,9 @@ struct tinyiiod_ops {
 	ssize_t (*close_instance)();
 
 	ssize_t (*read_attr)(const char *device, const char *attr,
-			     char *buf, size_t len, bool debug);
+			     char *buf, size_t len, enum iio_attr_type type);
 	ssize_t (*write_attr)(const char *device, const char *attr,
-			      const char *buf, size_t len, bool debug);
+			      const char *buf, size_t len, enum iio_attr_type type);
 
 	ssize_t (*ch_read_attr)(const char *device, const char *channel,
 				bool ch_out, const char *attr, char *buf, size_t len);
