@@ -22,7 +22,8 @@
 static int32_t parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 {
 	char *device, *channel, *attr, *ptr;
-	bool is_channel = false, output = false, debug = false;
+	bool is_channel = false, output = false;
+	enum iio_attr_type type = IIO_ATTR_TYPE_DEVICE;
 	long bytes;
 
 	ptr = strchr(str, ' ');
@@ -41,8 +42,11 @@ static int32_t parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 		output = true;
 		str += sizeof("OUTPUT ") - 1;
 	} else if (!strncmp(str, "DEBUG ", sizeof("DEBUG ") - 1)) {
-		debug = true;
+		type = IIO_ATTR_TYPE_DEBUG;
 		str += sizeof("DEBUG ") - 1;
+	} else if (!strncmp(str, "BUFFER ", sizeof("BUFFER ") - 1)) {
+		type = IIO_ATTR_TYPE_BUFFER;
+		str += sizeof("BUFFER ") - 1;
 	}
 
 	if (is_channel) {
@@ -68,7 +72,7 @@ static int32_t parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 		str = ptr + 1;
 	} else {
 		tinyiiod_do_read_attr(iiod, device, channel,
-				      output, attr, debug);
+				      output, attr, type);
 		return 0;
 	}
 
@@ -77,7 +81,7 @@ static int32_t parse_rw_string(struct tinyiiod *iiod, char *str, bool write)
 		return -EINVAL;
 
 	tinyiiod_do_write_attr(iiod, device, channel,
-			       output, attr, (size_t) bytes, debug);
+			       output, attr, (size_t) bytes, type);
 
 	return 0;
 }

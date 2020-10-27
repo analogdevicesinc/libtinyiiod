@@ -134,7 +134,7 @@ void tinyiiod_write_xml(struct tinyiiod *iiod)
 }
 
 void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
-			   const char *channel, bool ch_out, const char *attr, bool debug)
+			   const char *channel, bool ch_out, const char *attr, enum iio_attr_type type)
 {
 	ssize_t ret;
 
@@ -143,7 +143,7 @@ void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 					      ch_out, attr, iiod->buf, IIOD_BUFFER_SIZE);
 	else
 		ret = iiod->ops->read_attr(device, attr,
-					   iiod->buf, IIOD_BUFFER_SIZE, debug);
+					   iiod->buf, IIOD_BUFFER_SIZE, type);
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 	if (ret > 0) {
@@ -154,7 +154,7 @@ void tinyiiod_do_read_attr(struct tinyiiod *iiod, const char *device,
 
 void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 			    const char *channel, bool ch_out, const char *attr,
-			    size_t bytes, bool debug)
+			    size_t bytes, enum iio_attr_type type)
 {
 	ssize_t ret;
 
@@ -168,7 +168,7 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 		ret = iiod->ops->ch_write_attr(device, channel, ch_out,
 					       attr, iiod->buf, bytes);
 	else
-		ret = iiod->ops->write_attr(device, attr, iiod->buf, bytes, debug);
+		ret = iiod->ops->write_attr(device, attr, iiod->buf, bytes, type);
 
 	tinyiiod_write_value(iiod, (int32_t) ret);
 }
