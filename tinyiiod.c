@@ -222,8 +222,11 @@ int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
 		} else
 			return ret;
 	}
-	if (iiod->ops->transfer_mem_to_dev)
+	if (iiod->ops->transfer_mem_to_dev) {
 		ret = iiod->ops->transfer_mem_to_dev(device, total_bytes);
+		if (ret < 0)
+			return ret;
+	}
 	tinyiiod_write_value(iiod, (int) total_bytes);
 
 	return ret;
@@ -242,8 +245,11 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 	if (ret < 0) {
 		return ret;
 	}
-	if (iiod->ops->transfer_dev_to_mem)
+	if (iiod->ops->transfer_dev_to_mem) {
 		ret = iiod->ops->transfer_dev_to_mem(device, bytes_count);
+		if (ret < 0)
+			return ret;
+	}
 	while (bytes_count) {
 		size_t bytes = bytes_count > sizeof(buf) ? sizeof(buf) : bytes_count;
 
