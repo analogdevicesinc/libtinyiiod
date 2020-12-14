@@ -171,7 +171,7 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 	if (!strncmp(str, "VERSION", sizeof("VERSION"))) {
 		char buf[32];
 
-		snprintf(buf, sizeof(buf), "%"PRIu16".%"PRIu16".%-7.7s\n",
+		snprintf(buf, sizeof(buf), "%"PRIu16".%"PRIu16".%07x\n",
 			 TINYIIOD_VERSION_MAJOR,
 			 TINYIIOD_VERSION_MINOR,
 			 TINYIIOD_VERSION_GIT);
