@@ -120,6 +120,29 @@ static int32_t parse_timeout_string(struct tinyiiod *iiod, char *str)
 	return tinyiiod_set_timeout(iiod, timeout);
 }
 
+static int32_t parse_set_string(struct tinyiiod *iiod, char *str)
+{
+	char *device, *ptr;
+	uint32_t buffers_count;
+
+	ptr = strchr(str, ' ');
+	if (!ptr)
+		return -EINVAL;
+
+	*ptr = '\0';
+	device = str;
+	str = ptr + 1;
+
+	if (!strncmp(str, "BUFFERS_COUNT ", sizeof("BUFFERS_COUNT ") - 1))
+		str += sizeof("BUFFERS_COUNT ") - 1;
+	else
+		return -EINVAL;
+
+	buffers_count = strtol(str, NULL, 10);
+
+	return tinyiiod_set_buffers_count(iiod, device, buffers_count);
+}
+
 static int32_t parse_writebuf_string(struct tinyiiod *iiod, char *str)
 {
 	char *device, *ptr;
@@ -212,6 +235,9 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 
 	if (!strncmp(str, "GETTRIG", sizeof("GETTRIG") - 1))
 		return tinyiiod_write_value(iiod, -ENODEV);
+
+	if (!strncmp(str, "SET", sizeof("SET") - 1))
+		return parse_set_string(iiod, str + sizeof("SET ") - 1);
 
 	return -EINVAL;
 }

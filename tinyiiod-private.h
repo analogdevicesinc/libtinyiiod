@@ -56,4 +56,7 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str);
 
 int32_t tinyiiod_set_timeout(struct tinyiiod *iiod, uint32_t timeout);
 
+int32_t tinyiiod_set_buffers_count(struct tinyiiod *iiod, const char *device,
+				   uint32_t buffers_count);
+
 #endif /* TINYIIOD_PRIVATE_H */

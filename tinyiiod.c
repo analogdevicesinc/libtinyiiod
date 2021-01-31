@@ -284,3 +284,15 @@ int32_t tinyiiod_set_timeout(struct tinyiiod *iiod, uint32_t timeout)
 
 	return ret;
 }
+
+int32_t tinyiiod_set_buffers_count(struct tinyiiod *iiod, const char *device,
+				   uint32_t buffers_count)
+{
+	int32_t ret = 0;
+
+	if (iiod->ops->set_buffers_count)
+		ret = iiod->ops->set_buffers_count(device, buffers_count);
+	tinyiiod_write_value(iiod, ret);
+
+	return ret;
+}

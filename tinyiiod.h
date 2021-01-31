@@ -76,6 +76,8 @@ struct tinyiiod_ops {
 
 	int32_t (*set_timeout)(uint32_t timeout);
 
+	int32_t (*set_buffers_count)(const char *device, uint32_t buffers_count);
+
 	ssize_t (*get_xml)(char **outxml);
 };
 
