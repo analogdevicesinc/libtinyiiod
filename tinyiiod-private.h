@@ -39,7 +39,7 @@ void tinyiiod_do_write_attr(struct tinyiiod *iiod, const char *device,
 			    size_t bytes, enum iio_attr_type type);
 
 void tinyiiod_do_open(struct tinyiiod *iiod, const char *device,
-		      size_t sample_size, uint32_t mask);
+		      size_t sample_size, uint32_t mask, bool cyclic);
 void tinyiiod_do_close(struct tinyiiod *iiod, const char *device);
 
 int32_t tinyiiod_do_open_instance(struct tinyiiod *iiod);
