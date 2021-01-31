@@ -91,6 +91,7 @@ static int32_t parse_open_string(struct tinyiiod *iiod, char *str)
 	char *device, *ptr;
 	long samples_count;
 	uint32_t mask = 0;
+	bool cyclic = false;
 
 	ptr = strchr(str, ' ');
 	if (!ptr)
@@ -106,9 +107,17 @@ static int32_t parse_open_string(struct tinyiiod *iiod, char *str)
 
 	str = ptr + 1;
 
-	mask = strtoul(str, NULL, 16);
+	mask = strtoul(str, &ptr, 16);
 
-	tinyiiod_do_open(iiod, device, (size_t) samples_count, mask);
+	if (*ptr == ' ') {
+		str = ptr + 1;
+		if (!strncmp(str, "CYCLIC", sizeof("CYCLIC") - 1))
+			cyclic = true;
+		else
+			return -EINVAL;
+	}
+
+	tinyiiod_do_open(iiod, device, (size_t) samples_count, mask, cyclic);
 
 	return 0;
 }
