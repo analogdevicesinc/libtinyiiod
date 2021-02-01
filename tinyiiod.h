@@ -20,6 +20,16 @@
 
 #include "compat.h"
 
+#ifdef _WIN32
+#ifdef TINYIIOD_EXPORTS
+#define TINYIIOD_API __declspec(dllexport)
+#else
+#define TINYIIOD_API __declspec(dllimport)
+#endif
+#elif __GNUC__ >= 4
+#define TINYIIOD_API
+#endif
+
 struct tinyiiod;
 
 enum iio_attr_type {
@@ -69,8 +79,8 @@ struct tinyiiod_ops {
 	ssize_t (*get_xml)(char **outxml);
 };
 
-struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops);
-void tinyiiod_destroy(struct tinyiiod *iiod);
-int32_t tinyiiod_read_command(struct tinyiiod *iiod);
+TINYIIOD_API struct tinyiiod * tinyiiod_create(struct tinyiiod_ops *ops);
+TINYIIOD_API void tinyiiod_destroy(struct tinyiiod *iiod);
+TINYIIOD_API int32_t tinyiiod_read_command(struct tinyiiod *iiod);
 
 #endif /* TINYIIOD_H */

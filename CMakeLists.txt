@@ -13,12 +13,23 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.1.3)
 project(tinyiiod C)
 
 set(TINYIIOD_VERSION_MAJOR 0)
 set(TINYIIOD_VERSION_MINOR 1)
 set(TINYIIOD_VERSION ${TINYIIOD_VERSION_MAJOR}.${TINYIIOD_VERSION_MINOR})
+
+include(GNUInstallDirs)
+
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+if (WIN32)
+	set(CMAKE_SHARED_MODULE_PREFIX "")
+	set(CMAKE_STATIC_LIBRARY_PREFIX "")
+	SET(CMAKE_IMPORT_LIBRARY_PREFIX "")
+endif()
 
 # Get the GIT hash of the latest commit
 include(FindGit OPTIONAL)
@@ -50,15 +61,59 @@ add_definitions(-DTINYIIOD_VERSION_MAJOR=${TINYIIOD_VERSION_MAJOR})
 add_definitions(-DTINYIIOD_VERSION_MINOR=${TINYIIOD_VERSION_MINOR})
 add_definitions(-DTINYIIOD_VERSION_GIT="${TINYIIOD_VERSION_GIT}")
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+# Set the default install path to /usr/local
+if (NOT WIN32 AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "default install path" FORCE)
+endif()
 
-add_library(tinyiiod tinyiiod.c parser.c)
-set_target_properties(tinyiiod PROPERTIES
+if (BUILD_SHARED_LIBS)
+add_library(${PROJECT_NAME} SHARED
+		tinyiiod.c
+		parser.c)
+else()
+	add_library(${PROJECT_NAME}
+			tinyiiod.c
+			parser.c)
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE TINYIIOD_EXPORTS)
+
+target_include_directories(${PROJECT_NAME}
+		PUBLIC
+			$<INSTALL_INTERFACE:include>
+			$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/tinyiiod.h>
+			$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/compat.h>
+		PRIVATE
+			${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
 	VERSION ${TINYIIOD_VERSION}
 	SOVERSION ${TINYIIOD_VERSION_MAJOR}
-	PUBLIC_HEADER tinyiiod.h
 )
+
+if (MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+endif()
+
+if (APPLE)
+	set_target_properties(${PROJECT_NAME} PROPERTIES FRAMEWORK FALSE)
+endif()
+
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets
+		ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+		FRAMEWORK DESTINATION "${OSX_INSTALL_FRAMEWORKSDIR}"
+		)
+
+install(FILES ${CMAKE_SOURCE_DIR}/tinyiiod.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
+install(FILES ${CMAKE_SOURCE_DIR}/compat.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
+
+install(EXPORT ${PROJECT_NAME}Targets
+		FILE ${PROJECT_NAME}Targets.cmake
+		NAMESPACE ${PROJECT_NAME}::
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 project(tinyiiod-test C)
 add_executable(tinyiiod-test example.c)
