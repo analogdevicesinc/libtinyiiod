@@ -23,6 +23,7 @@ set(TINYIIOD_VERSION ${TINYIIOD_VERSION_MAJOR}.${TINYIIOD_VERSION_MINOR})
 include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_EXAMPLES "Build examples" ON)
 
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 if (WIN32)
@@ -129,6 +130,8 @@ write_basic_package_version_file(
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake ${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
 		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-project(tinyiiod-test C)
-add_executable(tinyiiod-test example.c)
-target_link_libraries(tinyiiod-test tinyiiod)
+if (BUILD_EXAMPLES)
+	project(tinyiiod-test C)
+	add_executable(tinyiiod-test example.c)
+	target_link_libraries(tinyiiod-test tinyiiod)
+endif()
