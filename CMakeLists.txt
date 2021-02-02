@@ -55,11 +55,11 @@ if (NOT TINYIIOD_VERSION_GIT)
 	set(TINYIIOD_VERSION_GIT v${TINYIIOD_VERSION})
 endif()
 
-add_definitions(-D_USE_STD_INT_TYPES)
-add_definitions(-DIIOD_BUFFER_SIZE=0x1000)
 add_definitions(-DTINYIIOD_VERSION_MAJOR=${TINYIIOD_VERSION_MAJOR})
 add_definitions(-DTINYIIOD_VERSION_MINOR=${TINYIIOD_VERSION_MINOR})
 add_definitions(-DTINYIIOD_VERSION_GIT="${TINYIIOD_VERSION_GIT}")
+
+configure_file(${CMAKE_SOURCE_DIR}/cmake/tinyiiodConfig.cmake ${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake @ONLY)
 
 # Set the default install path to /usr/local
 if (NOT WIN32 AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -76,6 +76,8 @@ else()
 			parser.c)
 endif()
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_STD_INT_TYPES)
+target_compile_definitions(${PROJECT_NAME} PUBLIC IIOD_BUFFER_SIZE=0x1000)
 target_compile_definitions(${PROJECT_NAME} PRIVATE TINYIIOD_EXPORTS)
 
 target_include_directories(${PROJECT_NAME}
@@ -110,9 +112,21 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets
 install(FILES ${CMAKE_SOURCE_DIR}/tinyiiod.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 install(FILES ${CMAKE_SOURCE_DIR}/compat.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
 install(EXPORT ${PROJECT_NAME}Targets
 		FILE ${PROJECT_NAME}Targets.cmake
 		NAMESPACE ${PROJECT_NAME}::
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+		VERSION ${TINYIIOD_VERSION}
+		COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake ${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
 		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 project(tinyiiod-test C)
