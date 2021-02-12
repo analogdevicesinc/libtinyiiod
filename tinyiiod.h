@@ -61,7 +61,8 @@ struct tinyiiod_ops {
 				 bool ch_out, const char *attr,
 				 const char *buf, size_t len);
 
-	int32_t (*open)(const char *device, size_t sample_size, uint32_t mask, bool cyclic);
+	int32_t (*open)(const char *device, size_t sample_size, uint32_t mask,
+			bool cyclic);
 	int32_t (*close)(const char *device);
 
 	ssize_t (*transfer_dev_to_mem)(const char *device, size_t bytes_count);
