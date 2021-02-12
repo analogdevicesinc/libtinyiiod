@@ -29,8 +29,11 @@
 #include <string.h>
 
 #ifdef _WIN32
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
+#ifndef _SSIZE_T_DEFINED
+#define _SSIZE_T_DEFINED
+#undef ssize_t
+typedef long int ssize_t;
+#endif
 #endif
 #else // _USE_STD_INT_TYPES
 #if !defined(__ssize_t_defined) && !defined(_SSIZE_T_DEFINED)
