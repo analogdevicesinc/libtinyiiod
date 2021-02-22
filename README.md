@@ -1,5 +1,7 @@
 # libtinyiiod
 
+[![Build Status](https://dev.azure.com/AnalogDevices/OpenSource/_apis/build/status/analogdevicesinc.libtinyiiod?branchName=master)](https://dev.azure.com/AnalogDevices/OpenSource/_build/latest?definitionId=20&branchName=master)
+
 Tiny IIO Daemon Library
 
 ## License
