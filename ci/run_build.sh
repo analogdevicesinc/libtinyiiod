@@ -5,10 +5,10 @@ TOP_DIR="$(pwd)"
 
 sudo apt-get update
 
-. ./ci/travis/lib.sh
+. ./ci/lib.sh
 
 build_tinyiiod() {
-    . ./ci/travis/build_project.sh
+    . ./ci/build_project.sh
 }
 
 build_cppcheck() {
