@@ -219,8 +219,10 @@ int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod,
 			if (ret < 0)
 				return ret;
 			bytes_count -= ret;
-		} else
+		} else if (ret < 0) {
 			return ret;
+		}
+		/* If ret == 0 -> no data available yet */
 	}
 	if (iiod->ops->transfer_mem_to_dev) {
 		ret = iiod->ops->transfer_mem_to_dev(device, total_bytes);
