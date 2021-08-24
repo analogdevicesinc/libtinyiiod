@@ -296,3 +296,33 @@ int32_t tinyiiod_set_buffers_count(struct tinyiiod *iiod, const char *device,
 
 	return ret;
 }
+
+
+int32_t tinyiiod_do_gettrig(struct tinyiiod *iiod, const char *device)
+{
+	int32_t ret = -EINVAL;
+
+	if (iiod->ops->get_trigger)
+		ret = iiod->ops->get_trigger(device, iiod->buf,
+					     IIOD_BUFFER_SIZE);
+	tinyiiod_write_value(iiod, ret);
+
+	if (ret > 0) {
+		iiod->buf[ret] = '\n';
+		tinyiiod_write(iiod, iiod->buf, (size_t) ret + 1);
+	}
+
+	return ret;
+}
+
+int32_t tinyiiod_do_settrig(struct tinyiiod *iiod, const char *device,
+			    char *trigger_name, size_t bytes_count)
+{
+	int32_t ret = -EINVAL;
+
+	if (iiod->ops->set_trigger)
+		ret = iiod->ops->set_trigger(device, trigger_name, bytes_count);
+	tinyiiod_write_value(iiod, ret);
+
+	return ret;
+}
