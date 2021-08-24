@@ -52,6 +52,11 @@ int32_t tinyiiod_do_readbuf(struct tinyiiod *iiod,
 int32_t tinyiiod_do_writebuf(struct tinyiiod *iiod, const char *device,
 			     size_t bytes_count);
 
+int32_t tinyiiod_do_gettrig(struct tinyiiod *iiod, const char *device);
+
+int32_t tinyiiod_do_settrig(struct tinyiiod *iiod, const char *device,
+			    char *trigger_name, size_t bytes_count);
+
 int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str);
 
 int32_t tinyiiod_set_timeout(struct tinyiiod *iiod, uint32_t timeout);

@@ -192,6 +192,32 @@ static int32_t parse_readbuf_string(struct tinyiiod *iiod, char *str)
 	return tinyiiod_do_readbuf(iiod, device, (size_t) bytes_count);
 }
 
+static int32_t parse_gettrig_string(struct tinyiiod *iiod, char *str)
+{
+	char *device, token[] = " ";
+
+	device = strtok(str, token);
+	if (!device)
+		return -EINVAL;
+
+	return tinyiiod_do_gettrig(iiod, device);
+}
+
+static int32_t parse_settrig_string(struct tinyiiod *iiod, char *str)
+{
+	char *device, *trig, token[] = " ";
+
+	device = strtok(str, token);
+	if (!device)
+		return -EINVAL;
+
+	trig = strtok(NULL, token);
+	if (!trig)
+		return tinyiiod_do_settrig(iiod, device, "", 0);
+
+	return tinyiiod_do_settrig(iiod, device, trig, strlen(trig));
+}
+
 int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 {
 	while (*str == '\n' || *str == '\r')
@@ -243,7 +269,10 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 		return tinyiiod_do_close_instance(iiod);
 
 	if (!strncmp(str, "GETTRIG", sizeof("GETTRIG") - 1))
-		return tinyiiod_write_value(iiod, -ENODEV);
+		return parse_gettrig_string(iiod, str + sizeof("GETTRIG ") - 1);
+
+	if (!strncmp(str, "SETTRIG", sizeof("SETTRIG") - 1))
+		return parse_settrig_string(iiod, str + sizeof("SETTRIG ") - 1);
 
 	if (!strncmp(str, "SET", sizeof("SET") - 1))
 		return parse_set_string(iiod, str + sizeof("SET ") - 1);
