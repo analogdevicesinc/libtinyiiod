@@ -26,7 +26,7 @@
 #else
 #define TINYIIOD_API __declspec(dllimport)
 #endif
-#elif __GNUC__ >= 4
+#elif (__GNUC__ >= 4) || defined(__IAR_SYSTEMS_ICC__)
 #define TINYIIOD_API
 #endif
 

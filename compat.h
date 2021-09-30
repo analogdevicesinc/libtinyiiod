@@ -28,7 +28,7 @@
 #include <errno.h>
 #include <string.h>
 
-#if defined(_WIN32) || defined(__ARMCC_VERSION)
+#if defined(_WIN32) || defined(__ARMCC_VERSION) || defined(__IAR_SYSTEMS_ICC__)
 #ifndef _SSIZE_T_DEFINED
 #define _SSIZE_T_DEFINED
 #undef ssize_t
