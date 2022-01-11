@@ -56,11 +56,7 @@ int32_t tinyiiod_read_command(struct tinyiiod *iiod)
 	if (ret < 0)
 		return ret;
 
-	ret = tinyiiod_parse_string(iiod, buf);
-	if (ret < 0)
-		tinyiiod_write_value(iiod, ret);
-
-	return ret;
+	return tinyiiod_parse_string(iiod, buf);
 }
 
 ssize_t tinyiiod_read(struct tinyiiod *iiod, char *buf, size_t len)
