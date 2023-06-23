@@ -226,7 +226,7 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 	if (str[0] == '\0')
 		return 0;
 
-	if (!strncmp(str, "VERSION", sizeof("VERSION"))) {
+	if (!strncmp(str, "VERSION", sizeof("VERSION") - 1)) {
 		char buf[32];
 
 		snprintf(buf, sizeof(buf), "%"PRIu16".%"PRIu16".%07x\n",
@@ -237,7 +237,7 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 		return 0;
 	}
 
-	if (!strncmp(str, "PRINT", sizeof("PRINT"))) {
+	if (!strncmp(str, "PRINT", sizeof("PRINT") - 1)) {
 		tinyiiod_write_xml(iiod);
 		return 0;
 	}
