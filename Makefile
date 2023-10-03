@@ -46,7 +46,7 @@ LDFLAGS = -L $(LIB_DIR)							\
 	  -ltinyiiod
 IIO_DEFS = -D TINYIIOD_VERSION_MAJOR=$(TINYIIOD_VERSION_MAJOR)		\
 	   -D TINYIIOD_VERSION_MINOR=$(TINYIIOD_VERSION_MINOR)		\
-	   -D TINYIIOD_VERSION_GIT=0x$(shell git rev-parse --short HEAD)\
+	   -D TINYIIOD_VERSION_GIT=\"$(shell git rev-parse --short HEAD)\"\
 	   -D IIOD_BUFFER_SIZE=$(BUFF_SIZE)
 
 ifeq (true,$(strip $(STD_TYPES)))
