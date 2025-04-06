@@ -277,5 +277,8 @@ int32_t tinyiiod_parse_string(struct tinyiiod *iiod, char *str)
 	if (!strncmp(str, "SET", sizeof("SET") - 1))
 		return parse_set_string(iiod, str + sizeof("SET ") - 1);
 
+	char buf[128];
+	snprintf(buf, sizeof(buf), "%i\n", -EINVAL);
+	tinyiiod_write_string(iiod, buf);
 	return -EINVAL;
 }
